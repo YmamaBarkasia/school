@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المدرسة</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --dark-color: #1d3557;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7ff;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dashboard-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            background: white;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .qr-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--success-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        
+        .role-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #4895ef);
+            border: none;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #b5179e);
+            border: none;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--dark-color);
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .note-card {
+            border-left: 4px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        
+        .exam-card {
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-school me-2"></i>
+                نظام إدارة المدرسة
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span id="currentUserName">أحمد محمد</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" id="switchRoleBtn">تغيير الدور</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar" id="sidebar">
+                <div class="p-3">
+                    <div class="text-center mb-4">
+                        <div class="user-avatar">أ</div>
+                        <h6 id="sidebarUserName">أحمد محمد</h6>
+                        <span class="role-badge bg-primary" id="sidebarUserRole">مدير</span>
+                    </div>
+                    <ul class="nav flex-column" id="sidebarMenu">
+                        <!-- Menu items will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10">
+                <main class="p-4" id="mainContent">
+                    <!-- Content will be loaded dynamically -->
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div class="modal fade" id="qrModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">رمز QR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="qr-code">
+                        <div>QR Code<br>Placeholder</div>
+                    </div>
+                    <p class="mt-3">استخدم هذا الرمز للوصول السريع إلى المعلومات</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary">تنزيل</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // User roles and data
+        const roles = {
+            'director': {
+                name: 'مدير',
+                menu: [
+                    { id: 'dashboard', text: 'لوحة التحكم', icon: 'fas fa-tachometer-alt' },
+                    { id: 'users', text: 'إدارة المستخدمين', icon: 'fas fa-users' },
+                    { id: 'analytics', text: 'التحليلات', icon: 'fas fa-chart-line' },
+                    { id: 'settings', text: 'الإعدادات', icon: 'fas fa-cog' }
+                ]
+            },
+            'counselor': {
+                name: 'موجه',
+                menu: [
+                    { id: 'student-results', text: 'نتائج الطلاب', icon: 'fas fa-graduation-cap' },
+                    { id: 'student-notes', text: 'ملاحظات الطلاب', icon: 'fas fa-sticky-note' },
+                    { id: 'teacher-notes', text: 'ملاحظات المدرسين', icon: 'fas fa-chalkboard-teacher' },
+                    { id: 'qr-generator', text: 'مولد QR', icon: 'fas fa-qrcode' }
+                ]
+            },
+            'teacher': {
+                name: 'مدرس',
+                menu: [
+                    { id: 'student-notes', text: 'ملاحظات الطلاب', icon: 'fas fa-sticky-note' },
+                    { id: 'exam-templates', text: 'نماذج الامتحانات', icon: 'fas fa-file-alt' },
+                    { id: 'qr-generator', text: 'مولد QR', icon: 'fas fa-qrcode' },
+                    { id: 'my-profile', text: 'ملفي', icon: 'fas fa-user' }
+                ]
+            },
+            'student': {
+                name: 'طالب',
+                menu: [
+                    { id: 'my-results', text: 'نتائجي', icon: 'fas fa-chart-bar' },
+                    { id: 'my-notes', text: 'ملاحظات عني', icon: 'fas fa-comment' },
+                    { id: 'exam-templates', text: 'نماذج الامتحانات', icon: 'fas fa-file-alt' },
+                    { id: 'my-profile', text: 'ملفي', icon: 'fas fa-user' }
+                ]
+            }
+        };
+
+        // Mock data
+        const mockData = {
+            students: [
+                { id: 1, name: 'أحمد محمد', grade: 'العاشر', results: { math: 85, science: 92, arabic: 78 } },
+                { id: 2, name: 'سارة علي', grade: 'التاسع', results: { math: 90, science: 88, arabic: 95 } },
+                { id: 3, name: 'محمد خالد', grade: 'العاشر', results: { math: 75, science: 82, arabic: 88 } }
+            ],
+            teachers: [
+                { id: 1, name: 'د. علي حسن', subject: 'الرياضيات' },
+                { id: 2, name: 'أ. فاطمة أحمد', subject: 'اللغة العربية' },
+                { id: 3, name: 'د. خالد سعيد', subject: 'العلوم' }
+            ],
+            examTemplates: [
+                { id: 1, subject: 'الرياضيات', grade: 'العاشر', date: '2024-01-15', file: 'math_exam.pdf' },
+                { id: 2, subject: 'العلوم', grade: 'التاسع', date: '2024-01-20', file: 'science_exam.pdf' }
+            ],
+            notes: {
+                student: [
+                    { student: 'أحمد محمد', note: 'يحتاج إلى تحسين في الرياضيات', date: '2024-01-10' },
+                    { student: 'سارة علي', note: 'ممتازة في جميع المواد', date: '2024-01-12' }
+                ],
+                teacher: [
+                    { teacher: 'د. علي حسن', note: 'يحتاج إلى تحسين أسلوب الشرح', date: '2024-01-08' }
+                ]
+            }
+        };
+
+        // Current user state
+        let currentUser = {
+            name: 'أحمد محمد',
+            role: 'director' // Can be: director, counselor, teacher, student
+        };
+
+        // Initialize the application
+        function initApp() {
+            updateUI();
+            setupEventListeners();
+        }
+
+        // Update UI based on current user role
+        function updateUI() {
+            // Update header and sidebar
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            document.getElementById('sidebarUserName').textContent = currentUser.name;
+            document.getElementById('sidebarUserRole').textContent = roles[currentUser.role].name;
+            
+            // Update sidebar menu
+            const menuContainer = document.getElementById('sidebarMenu');
+            menuContainer.innerHTML = '';
+            roles[currentUser.role].menu.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                li.innerHTML = `
+                    <a class="nav-link" href="#" data-page="${item.id}">
+                        <i class="${item.icon} me-2"></i>
+                        ${item.text}
+                    </a>
+                `;
+                menuContainer.appendChild(li);
+            });
+
+            // Load default page
+            loadPage('dashboard');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Sidebar menu clicks
+            document.getElementById('sidebarMenu').addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    e.preventDefault();
+                    const pageId = e.target.getAttribute('data-page');
+                    loadPage(pageId);
+                }
+            });
+
+            // Switch role button
+            document.getElementById('switchRoleBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                const rolesList = ['director', 'counselor', 'teacher', 'student'];
+                const currentIndex = rolesList.indexOf(currentUser.role);
+                const nextIndex = (currentIndex + 1) % rolesList.length;
+                currentUser.role = rolesList[nextIndex];
+                updateUI();
+            });
+
+            // QR code buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-qr')) {
+                    const modal = new bootstrap.Modal(document.getElementById('qrModal'));
+                    modal.show();
+                }
+            });
+        }
+
+        // Load page content
+        function loadPage(pageId) {
+            const content = document.getElementById('mainContent');
+            
+            switch(pageId) {
+                case 'dashboard':
+                    content.innerHTML = getDashboardContent();
+                    break;
+                case 'users':
+                    content.innerHTML = getUsersContent();
+                    break;
+                case 'student-results':
+                    content.innerHTML = getStudentResultsContent();
+                    break;
+                case 'student-notes':
+                    content.innerHTML = getStudentNotesContent();
+                    break;
+                case 'teacher-notes':
+                    content.innerHTML = getTeacherNotesContent();
+                    break;
+                case 'exam-templates':
+                    content.innerHTML = getExamTemplatesContent();
+                    break;
+                case 'my-results':
+                    content.innerHTML = getMyResultsContent();
+                    break;
+                case 'my-notes':
+                    content.innerHTML = getMyNotesContent();
+                    break;
+                case 'qr-generator':
+                    content.innerHTML = getQRGeneratorContent();
+                    break;
+                default:
+                    content.innerHTML = '<h2>الصفحة غير موجودة</h2>';
+            }
+        }
+
+        // Dashboard content
+        function getDashboardContent() {
+            return `
+                <h2 class="section-title">لوحة التحكم</h2>
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="dashboard-card">
+                            <div class="card-body text-center">
+                                <div class="card-icon bg-primary mb-3">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stats-number">150</div>
+                                <div class="stats-label">إجمالي الطلاب</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="dashboard-card">
+                            <div class="card-body text-center">
+                                <div class="card-icon bg-success mb-3">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <div class="stats-number">25</div>
+                                <div class="stats-label">المدرسين</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="dashboard-card">
+                            <div class="card-body text-center">
+                                <div class="card-icon bg-warning mb-3">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="stats-number">8</div>
+                                <div class="stats-label">الموجهين</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="dashboard-card">
+                            <div class="card-body text-center">
+                                <div class="card-icon bg-info mb-3">
+                                    <i class="fas fa-school"></i>
+                                </div>
+                                <div class="stats-number">12</div>
+                                <div class="stats-label">الصفوف</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dashboard-card p-4 mb-4">
+                            <h5 class="mb-4">النشاط الأخير</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>النشاط</th>
+                                            <th>المستخدم</th>
+                                            <th>الوقت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>تم إضافة نتائج امتحان</td>
+                                            <td>د. علي حسن</td>
+                                            <td>قبل 2 ساعة</td>
+                                        </tr>
+                                        <tr>
+                                            <td>تم إضافة ملاحظة طالب</td>
+                                            <td>أ. سارة محمد</td>
+                                            <td>قبل 5 ساعات</td>
+                                        </tr>
+                                        <tr>
+                                            <td>تم نشر نموذج امتحان</td>
+                                            <td>د. خالد سعيد</td>
+                                            <td>أمس</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="qr-section">
+                            <h5 class="mb-3">رمز QR الشخصي</h5>
+                            <div class="qr-code mb-3">
+                                <div>QR Code<br>Placeholder</div>
+                            </div>
+                            <button class="btn btn-primary w-100 btn-qr">عرض رمز QR</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Users management content
+        function getUsersContent() {
+            return `
+                <h2 class="section-title">إدارة المستخدمين</h2>
+                <div class="dashboard-card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5>قائمة المستخدمين</h5>
+                        <button class="btn btn-primary">إضافة مستخدم جديد</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>الدور</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>أحمد محمد</td>
+                                    <td>مدير</td>
+                                    <td>ahmed@school.com</td>
+                                    <td><span class="badge bg-success">نشط</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-2">تعديل</button>
+                                        <button class="btn btn-sm btn-outline-danger">حذف</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>سارة علي</td>
+                                    <td>موجه</td>
+                                    <td>sara@school.com</td>
+                                    <td><span class="badge bg-success">نشط</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-2">تعديل</button>
+                                        <button class="btn btn-sm btn-outline-danger">حذف</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>محمد خالد</td>
+                                    <td>مدرس</td>
+                                    <td>mohamed@school.com</td>
+                                    <td><span class="badge bg-warning">معطل</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-2">تعديل</button>
+                                        <button class="btn btn-sm btn-outline-danger">حذف</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Student results content
+        function getStudentResultsContent() {
+            let html = `
+                <h2 class="section-title">نتائج الطلاب</h2>
+                <div class="dashboard-card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5>نتائج الطلاب</h5>
+                        <button class="btn btn-success">إضافة نتائج جديدة</button>
+                    </div>
+            `;
+            
+            mockData.students.forEach(student => {
+                html += `
+                    <div class="note-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${student.name} - ${student.grade}</h6>
+                                <div class="row mt-2">
+                                    <div class="col-md-4">
+                                        <strong>الرياضيات:</strong> ${student.results.math}%
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>العلوم:</strong> ${student.results.science}%
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>العربية:</strong> ${student.results.arabic}%
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm btn-qr">QR</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            return html;
+        }
+
+        // Student notes content
+        function getStudentNotesContent() {
+            let html = `
+                <h2 class="section-title">ملاحظات الطلاب</h2>
+                <div class="dashboard-card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5>إضافة ملاحظة جديدة</h5>
+                    </div>
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <select class="form-select">
+                                    <option>اختر الطالب</option>
+                                    ${mockData.students.map(s => `<option>${s.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="3" placeholder="اكتب الملاحظة هنا..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">حفظ الملاحظة</button>
+                    </form>
+                </div>
+                
+                <div class="dashboard-card p-4">
+                    <h5>الملاحظات السابقة</h5>
+            `;
+            
+            mockData.notes.student.forEach(note => {
+                html += `
+                    <div class="note-card">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>${note.student}</strong>
+                                <p class="mb-1">${note.note}</p>
+                                <small class="text-muted">${note.date}</small>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm btn-qr">QR</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            return html;
+        }
+
+        // Teacher notes content
+        function getTeacherNotesContent() {
+            let html = `
+                <h2 class="section-title">ملاحظات المدرسين</h2>
+                <div class="dashboard-card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5>إضافة ملاحظة جديدة</h5>
+                    </div>
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <select class="form-select">
+                                    <option>اختر المدرس</option>
+                                    ${mockData.teachers.map(t => `<option>${t.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="3" placeholder="اكتب الملاحظة هنا..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">حفظ الملاحظة</button>
+                    </form>
+                </div>
+                
+                <div class="dashboard-card p-4">
+                    <h5>الملاحظات السابقة</h5>
+            `;
+            
+            mockData.notes.teacher.forEach(note => {
+                html += `
+                    <div class="note-card">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>${note.teacher}</strong>
+                                <p class="mb-1">${note.note}</p>
+                                <small class="text-muted">${note.date}</small>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm btn-qr">QR</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            return html;
+        }
+
+        // Exam templates content
+        function getExamTemplatesContent() {
+            let html = `
+                <h2 class="section-title">نماذج الامتحانات</h2>
+                <div class="dashboard-card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5>نشر نموذج جديد</h5>
+                        <button class="btn btn-success">رفع نموذج</button>
+                    </div>
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <select class="form-select">
+                                    <option>اختر المادة</option>
+                                    <option>الرياضيات</option>
+                                    <option>العلوم</option>
+                                    <option>اللغة العربية</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select">
+                                    <option>اختر الصف</option>
+                                    <option>التاسع</option>
+                                    <option>العاشر</option>
+                                    <option>الحادي عشر</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="file" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">نشر النموذج</button>
+                    </form>
+                </div>
+                
+                <div class="dashboard-card p-4">
+                    <h5>النماذج المنشورة</h5>
+            `;
+            
+            mockData.examTemplates.forEach(template => {
+                html += `
+                    <div class="exam-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>${template.subject} - ${template.grade}</h6>
+                                <p class="mb-1">تاريخ النشر: ${template.date}</p>
+                                <a href="#" class="text-primary"><i class="fas fa-download me-2"></i>${template.file}</a>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm btn-qr">QR</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            return html;
+        }
+
+        // My results content (for students)
+        function getMyResultsContent() {
+            const student = mockData.students[0]; // Mock current student
+            return `
+                <h2 class="section-title">نتائجي</h2>
+                <div class="dashboard-card p-4 text-center mb-4">
+                    <div class="user-avatar mb-3">أ</div>
+                    <h4>${student.name}</h4>
+                    <p class="text-muted">${student.grade}</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="dashboard-card p-4 text-center">
+                            <h5>الرياضيات</h5>
+                            <div class="stats-number">${student.results.math}%</div>
+                            <div class="progress mt-3" style="height: 10px;">
+                                <div class="progress-bar bg-primary" style="width: ${student.results.math}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="dashboard-card p-4 text-center">
+                            <h5>العلوم</h5>
+                            <div class="stats-number">${student.results.science}%</div>
+                            <div class="progress mt-3" style="height: 10px;">
+                                <div class="progress-bar bg-success" style="width: ${student.results.science}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="dashboard-card p-4 text-center">
+                            <h5>اللغة العربية</h5>
+                            <div class="stats-number">${student.results.arabic}%</div>
+                            <div class="progress mt-3" style="height: 10px;">
+                                <div class="progress-bar bg-warning" style="width: ${student.results.arabic}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button class="btn btn-primary btn-qr">عرض رمز QR للنتائج</button>
+                </div>
+            `;
+        }
+
+        // My notes content (for students)
+        function getMyNotesContent() {
+            const studentNotes = mockData.notes.student.filter(note => note.student === 'أحمد محمد');
+            let html = `
+                <h2 class="section-title">ملاحظات عني</h2>
+                <div class="dashboard-card p-4 text-center mb-4">
+                    <div class="user-avatar mb-3">أ</div>
+                    <h4>أحمد محمد</h4>
+                </div>
+            `;
+            
+            if (studentNotes.length > 0) {
+                studentNotes.forEach(note => {
+                    html += `
+                        <div class="note-card">
+                            <p>${note.note}</p>
+                            <small class="text-muted">تاريخ الإضافة: ${note.date}</small>
+                        </div>
+                    `;
+                });
+            } else {
+                html += `
+                    <div class="dashboard-card p-4 text-center">
+                        <i class="fas fa-comment fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">لا توجد ملاحظات حالياً</p>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+
+        // QR Generator content
+        function getQRGeneratorContent() {
+            return `
+                <h2 class="section-title">مولد رموز QR</h2>
+                <div class="dashboard-card p-4 mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">اختر النوع</label>
+                                    <select class="form-select">
+                                        <option>نتائج طالب</option>
+                                        <option>ملاحظة طالب</option>
+                                        <option>نموذج امتحان</option>
+                                        <option>الملف الشخصي</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">البيانات</label>
+                                    <textarea class="form-control" rows="4" placeholder="أدخل البيانات التي تريد تضمينها في رمز QR"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">إنشاء رمز QR</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="qr-section h-100 d-flex flex-column justify-content-center">
+                                <h5 class="text-center mb-4">معاينة رمز QR</h5>
+                                <div class="qr-code mx-auto">
+                                    <div>QR Code<br>Preview</div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <button class="btn btn-success">تنزيل الرمز</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card p-4">
+                    <h5>الرموز المنشأة مؤخراً</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="qr-code mx-auto" style="width: 100px; height: 100px;">
+                                <div>QR</div>
+                            </div>
+                            <small class="text-center d-block mt-2">نتائج أحمد</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="qr-code mx-auto" style="width: 100px; height: 100px;">
+                                <div>QR</div>
+                            </div>
+                            <small class="text-center d-block mt-2">ملاحظة سارة</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="qr-code mx-auto" style="width: 100px; height: 100px;">
+                                <div>QR</div>
+                            </div>
+                            <small class="text-center d-block mt-2">امتحان رياضيات</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

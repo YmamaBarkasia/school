@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة المدرس - نظام إدارة المدرسة</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --dark-color: #1d3557;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7ff;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dashboard-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            background: white;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .qr-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--success-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        
+        .role-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: #f72585;
+            color: white;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #4895ef);
+            border: none;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #b5179e);
+            border: none;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--dark-color);
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .note-card {
+            border-left: 4px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .exam-card {
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(63, 55, 201, 0.05));
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .quick-stats {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .search-box input {
+            padding-right: 40px;
+        }
+        
+        .subject-badge {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .grade-badge {
+            background: linear-gradient(135deg, var(--success-color), #4895ef);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-school me-2"></i>
+                نظام إدارة المدرسة
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span id="currentUserName">د. علي حسن</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>ملفي الشخصي</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="index.html"><i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <div class="p-3">
+                    <div class="text-center mb-4">
+                        <div class="user-avatar">د</div>
+                        <h6 id="sidebarUserName">د. علي حسن</h6>
+                        <span class="role-badge">مدرس</span>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-page="dashboard">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                لوحة التحكم
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="student-notes">
+                                <i class="fas fa-sticky-note me-2"></i>
+                                ملاحظات الطلاب
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="exam-templates">
+                                <i class="fas fa-file-alt me-2"></i>
+                                نماذج الامتحانات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="qr-generator">
+                                <i class="fas fa-qrcode me-2"></i>
+                                مولد QR
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="my-profile">
+                                <i class="fas fa-user me-2"></i>
+                                ملفي
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10">
+                <main class="p-4" id="mainContent">
+                    <!-- Dashboard Content -->
+                    <div id="dashboard-content">
+                        <h2 class="section-title">مرحباً بك في لوحة تحكم المدرس</h2>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="quick-stats">
+                                    <h3 class="stats-number">3</h3>
+                                    <p class="mb-0">المواد التي أدرّسها</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="quick-stats">
+                                    <h3 class="stats-number">120</h3>
+                                    <p class="mb-0">عدد الطلاب</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="quick-stats">
+                                    <h3 class="stats-number">5</h3>
+                                    <p class="mb-0">نماذج منشورة</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="dashboard-card p-4 mb-4">
+                                    <h5 class="mb-4">المواد التي أدرّسها</h5>
+                                    <div class="list-group">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>الرياضيات</strong>
+                                                <small class="text-muted d-block">الصف: العاشر</small>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill">40 طالب</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>الرياضيات</strong>
+                                                <small class="text-muted d-block">الصف: الحادي عشر</small>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill">35 طالب</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>الفيزياء</strong>
+                                                <small class="text-muted d-block">الصف: الثاني عشر</small>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill">45 طالب</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="dashboard-card p-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h5>النشاط الأخير</h5>
+                                        <button class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus me-1"></i>إضافة نشاط
+                                        </button>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>النشاط</th>
+                                                    <th>الصف</th>
+                                                    <th>التاريخ</th>
+                                                    <th>الحالة</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>نشر نموذج امتحان</td>
+                                                    <td>العاشر - رياضيات</td>
+                                                    <td>2024-01-15</td>
+                                                    <td><span class="badge bg-success">منشور</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>إضافة ملاحظة طالب</td>
+                                                    <td>أحمد محمد</td>
+                                                    <td>2024-01-14</td>
+                                                    <td><span class="badge bg-info">جديد</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>تحديث نتائج امتحان</td>
+                                                    <td>الحادي عشر - رياضيات</td>
+                                                    <td>2024-01-12</td>
+                                                    <td><span class="badge bg-warning">قيد المراجعة</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="dashboard-card p-4 mb-4">
+                                    <h5 class="mb-3">الطلاب المحتاجون لمتابعة</h5>
+                                    <div class="note-card">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>أحمد محمد</strong>
+                                                <p class="mb-1 text-danger">معدل منخفض في الرياضيات</p>
+                                                <small>الصف: العاشر</small>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary">عرض</button>
+                                        </div>
+                                    </div>
+                                    <div class="note-card">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>خالد سعيد</strong>
+                                                <p class="mb-1 text-warning">غياب متكرر</p>
+                                                <small>الصف: العاشر</small>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary">عرض</button>
+                                        </div>
+                                    </div>
+                                    <div class="note-card">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>نورا أحمد</strong>
+                                                <p class="mb-1 text-info">يحتاج دعم إضافي</p>
+                                                <small>الصف: الحادي عشر</small>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary">عرض</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="qr-section text-center">
+                                    <h5 class="mb-3">رمز QR الشخصي</h5>
+                                    <div class="qr-code mb-3">
+                                        <div>QR Code<br>Placeholder</div>
+                                    </div>
+                                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#qrModal">عرض رمز QR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Notes Content -->
+                    <div id="student-notes-content" class="hidden">
+                        <h2 class="section-title">ملاحظات الطلاب</h2>
+                        <div class="dashboard-card p-4 mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5>إضافة ملاحظة جديدة</h5>
+                            </div>
+                            <form id="addStudentNoteForm">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">اسم الطالب</label>
+                                        <select class="form-select" required>
+                                            <option value="">اختر الطالب</option>
+                                            <option>أحمد محمد - العاشر</option>
+                                            <option>سارة علي - التاسع</option>
+                                            <option>محمد خالد - العاشر</option>
+                                            <option>خالد سعيد - العاشر</option>
+                                            <option>نورا أحمد - الحادي عشر</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">التاريخ</label>
+                                        <input type="date" class="form-control" value="2024-01-15" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">المادة</label>
+                                    <select class="form-select" required>
+                                        <option value="">اختر المادة</option>
+                                        <option>الرياضيات - العاشر</option>
+                                        <option>الرياضيات - الحادي عشر</option>
+                                        <option>الفيزياء - الثاني عشر</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">نوع الملاحظة</label>
+                                    <select class="form-select" required>
+                                        <option value="">اختر النوع</option>
+                                        <option>أكاديمي</option>
+                                        <option>سلوكي</option>
+                                        <option>حضور وغياب</option>
+                                        <option>عام</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">الملاحظة</label>
+                                    <textarea class="form-control" rows="4" placeholder="اكتب الملاحظة التفصيلية هنا..." required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">الأولوية</label>
+                                    <select class="form-select">
+                                        <option value="normal">عادية</option>
+                                        <option value="high">عالية</option>
+                                        <option value="urgent">عاجلة</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>حفظ الملاحظة
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="dashboard-card p-4">
+                            <h5>الملاحظات السابقة</h5>
+                            <div class="note-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <strong>أحمد محمد</strong>
+                                            <span class="badge bg-warning">أكاديمي</span>
+                                        </div>
+                                        <p class="mb-1">يحتاج إلى تحسين في مادة الرياضيات، خاصة في فهم المعادلات التربيعية.</p>
+                                        <small class="text-muted">المادة: الرياضيات - العاشر</small>
+                                        <small class="text-muted d-block">تاريخ الإضافة: 2024-01-10</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                            <i class="fas fa-qrcode"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="note-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <strong>سارة علي</strong>
+                                            <span class="badge bg-success">سلوكي</span>
+                                        </div>
+                                        <p class="mb-1">ممتازة في السلوك والتعاون مع زملائها، تُعد مثالاً يُحتذى به.</p>
+                                        <small class="text-muted">المادة: الرياضيات - التاسع</small>
+                                        <small class="text-muted d-block">تاريخ الإضافة: 2024-01-12</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                            <i class="fas fa-qrcode"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="note-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <strong>خالد سعيد</strong>
+                                            <span class="badge bg-danger">حضور وغياب</span>
+                                        </div>
+                                        <p class="mb-1">غياب متكرر خلال الأسبوع الماضي، يرجى التواصل مع ولي الأمر.</p>
+                                        <small class="text-muted">المادة: الرياضيات - العاشر</small>
+                                        <small class="text-muted d-block">تاريخ الإضافة: 2024-01-14</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                            <i class="fas fa-qrcode"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exam Templates Content -->
+                    <div id="exam-templates-content" class="hidden">
+                        <h2 class="section-title">نماذج الامتحانات</h2>
+                        <div class="dashboard-card p-4 mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5>نشر نموذج جديد</h5>
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addExamModal">
+                                    <i class="fas fa-plus me-2"></i>رفع نموذج جديد
+                                </button>
+                            </div>
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-control" placeholder="ابحث عن مادة أو صف...">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>المادة</th>
+                                            <th>الصف</th>
+                                            <th>تاريخ النشر</th>
+                                            <th>الملف</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="subject-badge">الرياضيات</span></td>
+                                            <td><span class="grade-badge">العاشر</span></td>
+                                            <td>2024-01-15</td>
+                                            <td><a href="#" class="text-primary"><i class="fas fa-file-pdf me-2"></i>math_exam.pdf</a></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="subject-badge">الرياضيات</span></td>
+                                            <td><span class="grade-badge">الحادي عشر</span></td>
+                                            <td>2024-01-12</td>
+                                            <td><a href="#" class="text-primary"><i class="fas fa-file-pdf me-2"></i>math11_exam.pdf</a></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="subject-badge">الفيزياء</span></td>
+                                            <td><span class="grade-badge">الثاني عشر</span></td>
+                                            <td>2024-01-10</td>
+                                            <td><a href="#" class="text-primary"><i class="fas fa-file-pdf me-2"></i>physics_exam.pdf</a></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card p-4">
+                            <h5>إحصائيات النماذج</h5>
+                            <div class="row text-center">
+                                <div class="col-md-4 mb-3">
+                                    <div class="stats-number text-primary">3</div>
+                                    <div class="stats-label">نماذج رياضيات</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="stats-number text-success">1</div>
+                                    <div class="stats-label">نماذج فيزياء</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="stats-number text-warning">4</div>
+                                    <div class="stats-label">إجمالي النماذج</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QR Generator Content -->
+                    <div id="qr-generator-content" class="hidden">
+                        <h2 class="section-title">مولد رموز QR</h2>
+                        <div class="dashboard-card p-4 mb-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <form id="qrGeneratorForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">نوع المعلومات</label>
+                                            <select class="form-select" id="qrType" required>
+                                                <option value="">اختر النوع</option>
+                                                <option value="student-note">ملاحظة طالب</option>
+                                                <option value="exam-template">نموذج امتحان</option>
+                                                <option value="personal-profile">الملف الشخصي</option>
+                                                <option value="class-materials">مواد الصف</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" id="qrStudentSelect" style="display: none;">
+                                            <label class="form-label">اسم الطالب</label>
+                                            <select class="form-select">
+                                                <option>أحمد محمد</option>
+                                                <option>سارة علي</option>
+                                                <option>محمد خالد</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" id="qrExamSelect" style="display: none;">
+                                            <label class="form-label">نموذج الامتحان</label>
+                                            <select class="form-select">
+                                                <option>الرياضيات - العاشر</option>
+                                                <option>الرياضيات - الحادي عشر</option>
+                                                <option>الفيزياء - الثاني عشر</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">وصف إضافي (اختياري)</label>
+                                            <textarea class="form-control" rows="2" placeholder="أضف وصفاً إضافياً إذا رغبت"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-qrcode me-2"></i>إنشاء رمز QR
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="qr-section h-100 d-flex flex-column justify-content-center">
+                                        <h5 class="text-center mb-4">معاينة رمز QR</h5>
+                                        <div class="qr-code mx-auto">
+                                            <div>QR Code<br>Preview</div>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <button class="btn btn-success" id="downloadQRBtn">
+                                                <i class="fas fa-download me-2"></i>تنزيل الرمز
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card p-4">
+                            <h5>الرموز المنشأة مؤخراً</h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-3 text-center">
+                                    <div class="qr-code mx-auto" style="width: 100px; height: 100px;">
+                                        <div>QR</div>
+                                    </div>
+                                    <small class="d-block mt-2">ملاحظة أحمد</small>
+                                    <button class="btn btn-sm btn-outline-primary mt-2">عرض</button>
+                                </div>
+                                <div class="col-md-3 mb-3 text-center">
+                                    <div class="qr-code mx-auto" style="width: 100px; height: 100px;">
+                                        <div>QR</div>
+                                    </div>
+                                    <small class="d-block mt-2">امتحان رياضيات</small>
+                                    <button class="btn btn-sm btn-outline-primary mt-2">عرض</button>
+                                </div>
+                                <div class="col-md-3 mb-3 text-center">
+                                    <div class="qr-code mx-auto" style="width: 100px; height: 100px;">
+                                        <div>QR</div>
+                                    </div>
+                                    <small class="d-block mt-2">ملفي الشخصي</small>
+                                    <button class="btn btn-sm btn-outline-primary mt-2">عرض</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Profile Content -->
+                    <div id="my-profile-content" class="hidden">
+                        <h2 class="section-title">ملفي الشخصي</h2>
+                        <div class="dashboard-card p-4">
+                            <div class="profile-section text-center">
+                                <div class="user-avatar mb-3">د</div>
+                                <h3>د. علي حسن محمد</h3>
+                                <p class="text-muted mb-4">مدرس الرياضيات</p>
+                                
+                                <div class="row text-center mb-4">
+                                    <div class="col-md-4">
+                                        <div class="stats-number text-primary">3</div>
+                                        <div class="stats-label">المواد</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="stats-number text-success">120</div>
+                                        <div class="stats-label">الطلاب</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="stats-number">5</div>
+                                        <div class="stats-label">السنوات</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="text-start">
+                                            <h5>المعلومات الشخصية</h5>
+                                            <p><strong>الاسم الكامل:</strong> د. علي حسن محمد</p>
+                                            <p><strong>التخصص:</strong> الرياضيات</p>
+                                            <p><strong>الشهادة:</strong> دكتوراه في الرياضيات</p>
+                                            <p><strong>العنوان:</strong> حي المروج، الرياض</p>
+                                            <p><strong>رقم الهاتف:</strong> 05XXXXXXXX</p>
+                                            <p><strong>البريد الإلكتروني:</strong> ali@school.com</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-start">
+                                            <h5>المعلومات الأكاديمية</h5>
+                                            <p><strong>المواد التي أدرّسها:</strong></p>
+                                            <ul>
+                                                <li>الرياضيات - الصف العاشر</li>
+                                                <li>الرياضيات - الصف الحادي عشر</li>
+                                                <li>الفيزياء - الصف الثاني عشر</li>
+                                            </ul>
+                                            <p><strong>عدد الطلاب:</strong> 120 طالب</p>
+                                            <p><strong>تاريخ التعيين:</strong> سبتمبر 2019</p>
+                                            <p><strong>الرقم الوظيفي:</strong> TCH-2019-0023</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card p-4 mt-4">
+                            <h5>الإنجازات والأنشطة</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="dashboard-card p-3 text-center">
+                                        <i class="fas fa-award fa-2x text-warning mb-2"></i>
+                                        <h6>جائزة التميز</h6>
+                                        <p class="mb-0 text-muted">2023</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dashboard-card p-3 text-center">
+                                        <i class="fas fa-chalkboard-teacher fa-2x text-primary mb-2"></i>
+                                        <h6>ورشة عمل</h6>
+                                        <p class="mb-0 text-muted">طرق تدريس حديثة</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dashboard-card p-3 text-center">
+                                        <i class="fas fa-users fa-2x text-success mb-2"></i>
+                                        <h6>إشراف</h6>
+                                        <p class="mb-0 text-muted">طلاب متفوقين</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                <i class="fas fa-qrcode me-2"></i>رمز QR للملف الشخصي
+                            </button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Exam Modal -->
+    <div class="modal fade" id="addExamModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">رفع نموذج امتحان جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">المادة</label>
+                                <select class="form-select" required>
+                                    <option>الرياضيات</option>
+                                    <option>الفيزياء</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">الصف</label>
+                                <select class="form-select" required>
+                                    <option>العاشر</option>
+                                    <option>الحادي عشر</option>
+                                    <option>الثاني عشر</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">عنوان الامتحان</label>
+                                <input type="text" class="form-control" placeholder="مثال: امتحان الفصل الأول" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">تاريخ النشر</label>
+                                <input type="date" class="form-control" value="2024-01-15" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">وصف الامتحان (اختياري)</label>
+                            <textarea class="form-control" rows="2" placeholder="أضف وصفاً للامتحان"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ملف الامتحان</label>
+                            <input type="file" class="form-control" accept=".pdf,.doc,.docx" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary">رفع النموذج</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Modal -->
+    <div class="modal fade" id="qrModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">رمز QR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="qr-code">
+                        <div>QR Code<br>Placeholder</div>
+                    </div>
+                    <p class="mt-3">استخدم هذا الرمز للوصول السريع إلى المعلومات</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary">تنزيل</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Page navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            const contentSections = document.querySelectorAll('[id$="-content"]');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Hide all content sections
+                    contentSections.forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    
+                    // Show corresponding content section
+                    const pageId = this.getAttribute('data-page');
+                    document.getElementById(pageId + '-content').classList.remove('hidden');
+                });
+            });
+            
+            // QR Generator type selection
+            const qrTypeSelect = document.getElementById('qrType');
+            const qrStudentSelect = document.getElementById('qrStudentSelect');
+            const qrExamSelect = document.getElementById('qrExamSelect');
+            
+            if (qrTypeSelect) {
+                qrTypeSelect.addEventListener('change', function() {
+                    qrStudentSelect.style.display = 'none';
+                    qrExamSelect.style.display = 'none';
+                    
+                    switch(this.value) {
+                        case 'student-note':
+                            qrStudentSelect.style.display = 'block';
+                            break;
+                        case 'exam-template':
+                            qrExamSelect.style.display = 'block';
+                            break;
+                    }
+                });
+            }
+            
+            // Form submissions
+            const addStudentNoteForm = document.getElementById('addStudentNoteForm');
+            if (addStudentNoteForm) {
+                addStudentNoteForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('تم حفظ الملاحظة بنجاح!');
+                    this.reset();
+                });
+            }
+            
+            const qrGeneratorForm = document.getElementById('qrGeneratorForm');
+            if (qrGeneratorForm) {
+                qrGeneratorForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if(document.getElementById('qrType').value) {
+                        alert('تم إنشاء رمز QR بنجاح!');
+                    } else {
+                        alert('يرجى اختيار نوع المعلومات أولاً.');
+                    }
+                });
+            }
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const tableRows = document.querySelectorAll('tbody tr');
+                    
+                    tableRows.forEach(row => {
+                        const rowText = row.textContent.toLowerCase();
+                        if (rowText.includes(searchTerm)) {
+                            row.style.display = 'table-row';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
