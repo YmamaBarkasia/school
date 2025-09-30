@@ -1,0 +1,79 @@
+
+    :root{
+      --primary:#4361ee; 
+      --accent:#3f37c9; 
+      --muted:#6c757d;
+    }
+    body{
+      font-family:Tajawal, sans-serif;
+      background:#f5f7ff;
+      padding-bottom:40px;
+    }
+    .topbar{
+      background:linear-gradient(90deg,var(--primary),var(--accent));
+      color:#fff;
+    }
+    .user-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 10px;
+    display: block;
+    border: 3px solid var(--primary);
+  }
+  @media (max-width: 576px) {
+  .user-avatar {
+    width: 160px !important;
+    height: 160px !important;
+  }
+}
+  .card-panel {
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    background: #fff;
+  }
+
+  .qr-box {
+    width: 170px;
+    height: 170px;
+    border-radius: 10px;
+    background: #f0f0f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; 
+  }
+    .note-card{
+      border-left:4px solid var(--primary);
+      padding:12px;
+      border-radius:8px;
+      background:#fff;
+      margin-bottom:12px;
+    }
+    .exam-card{
+      border:1px dashed rgba(67,97,238,0.14);
+      padding:12px;
+      border-radius:8px;
+      background:#fff;
+      margin-bottom:12px;
+    }
+    .small-muted{
+      color:var(--muted);
+      font-size:0.9rem;
+    }
+    .btn-ghost{
+      background:transparent;
+      border:1px dashed rgba(0,0,0,0.06);
+    }
+    @media (max-width:767px){
+       .qr-box{
+        width:120px;
+        height:120px;
+      }
+        .user-avatar{
+          width:72px;
+          height:72px;
+          font-size:20px;
+        }
+      }

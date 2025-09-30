@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ملف الطالب — نظام المدرسة</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="assest/css/style.css">
+</head>
+<body>
+  <!-- Topbar -->
+  <nav class="navbar topbar py-2">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <i class="fas fa-sign-out-alt text-white" style="cursor: pointer; font-size: 1.2rem;" onclick="location.href='index.html'"></i>
+              <h5 class="mb-0 text-white">ملف الطالب</h5>
+        </div>
+        <!-- <div class="text-end text-white small-muted">نظام إدارة المدرسة</div> -->
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="row g-3">
+      <!-- Left column: profile + QR -->
+      <aside class="col-12 col-md-4">
+        <div class="card-panel p-4">
+          <div class="text-center">
+            <img id="avatar" src="assest/image/copilot_image_1743686675023.jpeg" alt="صورة الطالب" class="user-avatar">
+            <h5 id="stuName" class="mb-0">اسم الطالب</h5>
+            <div id="stuGrade" class="small-muted">الصف</div>
+            <div class="mt-2">
+              <span id="stuIdBadge" class="badge bg-primary">ID: -</span>
+            </div>
+          </div>
+
+          <hr class="my-3">
+
+          <h6 class="mb-2">رمز QR سريع</h6>
+          <div class="text-center mb-3">
+            <div id="qrBox" class="qr-box"></div>
+          </div>
+          <div class="d-grid gap-2">
+            <button id="showQRBtn" class="btn btn-primary">عرض رمز QR</button>
+            <a id="downloadQR" class="btn btn-outline-secondary" download>تحميل الرمز</a>
+          </div>
+        </div>
+
+        <div class="card-panel p-3 mt-3">
+          <h6>معلومات سريعة</h6>
+          <p class="small-muted mb-1"><strong>الصف:</strong> <span id="infoGrade">-</span></p>
+          <p class="small-muted mb-1"><strong>آخر تحديث للنتائج:</strong> <span id="infoUpdated">-</span></p>
+        </div>
+      </aside>
+
+      <!-- Right column: results / notes / exams -->
+      <main class="col-12 col-md-8">
+        <!-- Results -->
+        <section class="card-panel p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">النتائج الامتحانية</h6>
+            <button class="btn btn-sm btn-success" id="btnRefreshResults">تحديث</button>
+            <button id="btnDownloadPDF" class="btn btn-primary">تحميل PDF</button>
+          </div>
+
+          <div id="resultsArea">
+            <!-- الجدول الجديد -->
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle text-center">
+                <thead class="table-light">
+                  <tr>
+                    <th>المادة</th>
+                    <th>مذاكرة</th>
+                    <th>شفهي</th>
+                    <th>وظائف</th>
+                    <th>مجموع أعمال السنة</th>
+                    <th>حالة أعمال السنة</th>
+                    <th>امتحان</th>
+                    <th>المحصلة النهائية</th>
+                    <th>الحالة النهائية</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                  <!-- بيانات الجدول من JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notes -->
+        <section class="card-panel p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">الملاحظات عن الطالب</h6>
+            <button class="btn btn-sm btn-outline-primary" id="btnAddNoteToggle">أضف ملاحظة</button>
+          </div>
+
+          <div id="addNoteArea" class="mb-3 hidden">
+            <form id="noteForm" class="row g-2">
+              <div class="col-12">
+                <textarea id="noteText" class="form-control" rows="3" placeholder="اكتب الملاحظة..."></textarea>
+              </div>
+              <div class="col-6">
+                <input id="noteDate" type="date" class="form-control" />
+              </div>
+              <div class="col-6 text-start">
+                <button class="btn btn-primary w-100" type="submit">حفظ الملاحظة</button>
+              </div>
+            </form>
+            <hr/>
+          </div>
+
+          <div id="notesList">
+            <!-- notes injected by JS -->
+          </div>
+        </section>
+
+        <!-- Exams -->
+        <section class="card-panel p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">نماذج الامتحانات المنشورة</h6>
+          </div>
+          <div id="examsList">
+            <!-- exams injected by JS -->
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- QR Modal -->
+  <div class="modal fade" id="qrModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">رمز QR</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body text-center" id="qrModalBody"></div>
+        <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button></div>
+      </div>
+    </div>
+  </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script>
+  // بيانات تجريبية
+  const mockStudents = [
+    { 
+      id: 'stu-101', 
+      name: 'أحمد محمد', 
+      grade: 'العاشر', 
+      results: [
+        {subject:'رياضيات',study:20,oral:15,homework:25,exam:30},
+        {subject:'علوم',study:18,oral:20,homework:20,exam:25},
+        {subject:'عربي',study:22,oral:18,homework:20,exam:30}
+      ], 
+      notes: [{text:'يحتاج لتحسين الواجبات',date:'2024-01-10'}], 
+      exams: [{title:'نموذج رياضيات - ديسمبر',file:'math_dec.pdf',date:'2024-12-01'}] 
+    }
+  ];
+
+  const paramId = new URL(window.location.href).searchParams.get('id');
+  const STUDENT = mockStudents.find(s=> s.id === paramId) || mockStudents[0];
+
+  function renderProfile(){
+    document.querySelector('#stuName').textContent = STUDENT.name;
+    document.querySelector('#stuGrade').textContent = STUDENT.grade;
+    document.querySelector('#stuIdBadge').textContent = 'ID: ' + STUDENT.id;
+    document.querySelector('#avatar').textContent = STUDENT.name.split(' ')[0].charAt(0) || 'ط';
+    document.querySelector('#infoGrade').textContent = STUDENT.grade;
+    document.querySelector('#infoUpdated').textContent = new Date().toLocaleDateString();
+    renderQR(STUDENT.id);
+  }
+
+  function qrUrl(data, size=260){
+    return `https://chart.googleapis.com/chart?chs=${size}x${size}&cht=qr&chl=${encodeURIComponent(data)}&choe=UTF-8`;
+  }
+
+  function renderQR(id){
+    const box = document.querySelector('#qrBox');
+    box.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = qrUrl(location.origin + location.pathname + '?id=' + id, 170);
+    box.appendChild(img);
+    const dl = document.querySelector('#downloadQR');
+    dl.href = qrUrl(location.origin + location.pathname + '?id=' + id, 400);
+    dl.download = `${id}-qr.png`;
+  }
+
+  function renderResults(){
+    const tbody = document.querySelector('#resultsTableBody');
+    tbody.innerHTML = STUDENT.results.map(r=>{
+      const totalWork = r.study + r.oral + r.homework;
+      const workStatus = totalWork>=50?'ناجح':'راسب';
+      const finalScore = totalWork + r.exam;
+      const finalStatus = finalScore>=60?'ناجح':'راسب';
+      return `<tr>
+        <td>${r.subject}</td>
+        <td>${r.study}</td>
+        <td>${r.oral}</td>
+        <td>${r.homework}</td>
+        <td>${totalWork}</td>
+        <td>${workStatus}</td>
+        <td>${r.exam}</td>
+        <td>${finalScore}</td>
+        <td>${finalStatus}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderNotes(){
+    const list = document.querySelector('#notesList');
+    if(!STUDENT.notes.length){
+      list.innerHTML = `<div class="card-panel p-3 text-center"><div class="small-muted">لا توجد ملاحظات حالياً</div></div>`;
+      return;
+    }
+    list.innerHTML = STUDENT.notes.map(n=>`
+      <div class="note-card">
+        <div class="d-flex justify-content-between">
+          <div>
+            <p class="mb-1">${n.text}</p>
+            <small class="text-muted">${n.date}</small>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderExams(){
+    const wrap = document.querySelector('#examsList');
+    if(!STUDENT.exams.length){
+      wrap.innerHTML = `<div class="card-panel p-3 text-center"><div class="small-muted">لا توجد نماذج منشورة</div></div>`;
+      return;
+    }
+    wrap.innerHTML = STUDENT.exams.map(e=>`
+      <div class="exam-card d-flex justify-content-between align-items-center">
+        <div>
+          <h6 class="mb-1">${e.title}</h6>
+          <small class="text-muted">تاريخ: ${e.date}</small>
+        </div>
+        <div class="text-end">
+          <a class="btn btn-sm btn-outline-primary me-2" href="${e.file}" download>تحميل</a>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function setupEvents(){
+    document.querySelector('#showQRBtn').addEventListener('click', ()=>{
+      const body = document.querySelector('#qrModalBody');
+      body.innerHTML = `<img src="${qrUrl(location.origin + location.pathname + '?id=' + STUDENT.id,380)}" style="max-width:100%"><p class="small-muted mt-2">${location.href}</p>`;
+      const modal = new bootstrap.Modal(document.querySelector('#qrModal'));
+      modal.show();
+    });
+
+    document.querySelector('#btnAddNoteToggle').addEventListener('click', ()=>{
+      document.querySelector('#addNoteArea').classList.toggle('hidden');
+    });
+
+    document.querySelector('#noteForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const text = document.querySelector('#noteText').value.trim();
+      const date = document.querySelector('#noteDate').value || new Date().toLocaleDateString();
+      if(!text){ alert('أدخل نص الملاحظة'); return; }
+      STUDENT.notes.unshift({ text, date });
+      document.querySelector('#noteText').value='';
+      document.querySelector('#noteDate').value='';
+      document.querySelector('#addNoteArea').classList.add('hidden');
+      renderNotes();
+    });
+
+    document.querySelector('#btnRefreshResults').addEventListener('click', ()=>{
+      renderResults();
+      alert('تم تحديث النتائج');
+    });
+
+    // ** زر تحميل PDF للجدول **
+    document.getElementById("btnDownloadPDF").addEventListener("click", () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: "landscape" });
+
+      doc.setFontSize(16);
+      doc.text("جدول علامات الطالب", doc.internal.pageSize.getWidth()/2, 15, { align: "center" });
+
+      // إنشاء الجدول مباشرة من HTML
+      doc.autoTable({
+        html: "#resultsTable",
+        startY: 25,
+        styles: { halign: "center" },
+        headStyles: { fillColor: [41,128,185], textColor: 255 }
+      });
+
+      doc.save("جدول_النتائج.pdf");
+    });
+  }
+
+  (function init(){
+    renderProfile();
+    renderResults();
+    renderNotes();
+    renderExams();
+    setupEvents();
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ملف الموجه — نظام المدرسة</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assest/css/style.css">
+</head>
+<body>
+  <!-- Topbar -->
+  <nav class="navbar topbar py-2">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-light btn-ghost" onclick="location.href='index.html'">العودة</button>
+          <h5 class="mb-0 text-white">ملف الموجه</h5>
+        </div>
+        <div class="text-end text-white small-muted">نظام إدارة المدرسة</div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="row g-3">
+      <!-- Left column: profile + info -->
+      <aside class="col-12 col-md-4">
+        <div class="card-panel p-4 text-center">
+          <div id="avatar" class="user-avatar mb-2">و</div>
+          <h5 id="supervisorName" class="mb-0">اسم الموجه</h5>
+          <div id="supervisorDept" class="small-muted">الصف/الشعبة</div>
+          <div class="mt-2">
+            <span id="supervisorIdBadge" class="badge bg-primary">ID: -</span>
+          </div>
+        </div>
+        <div class="card-panel p-3 mt-3">
+          <h6>معلومات سريعة</h6>
+          <p class="small-muted mb-1"><strong>الصف:</strong> <span id="infoGrade">التاسع</span></p>
+          <p class="small-muted mb-1"><strong>آخر تحديث:</strong> <span id="infoUpdated">-</span></p>
+        </div>
+      </aside>
+
+      <!-- Right column: students + table + notes -->
+      <main class="col-12 col-md-8">
+        <!-- Students by section -->
+        <section class="card-panel p-3 mb-3">
+          <h6 class="mb-2">الشعب الدراسية</h6>
+          <div class="d-flex gap-2 mb-2">
+            <button class="btn btn-outline-primary btn-sm" id="btnClass1">الشعبة 1</button>
+            <button class="btn btn-outline-primary btn-sm" id="btnClass2">الشعبة 2</button>
+          </div>
+          <div id="studentsList" class="list-group">
+            <!-- Students injected here -->
+          </div>
+        </section>
+
+        <!-- Marks table -->
+        <section class="card-panel p-3 mb-3">
+          <h6 class="mb-2">إدخال علامات الطلاب</h6>
+          <div class="table-wrapper">
+            <table class="table table-bordered align-middle text-center">
+              <thead>
+                <tr>
+                  <th>الطالب</th>
+                  <th>المذاكرة</th>
+                  <th>الشفهي</th>
+                  <th>الوظائف</th>
+                  <th>المجموع</th>
+                  <th>الحالة</th>
+                  <th>الامتحان</th>
+                  <th>الدرجة النهائية</th>
+                  <th>الحالة النهائية</th>
+                </tr>
+              </thead>
+              <tbody id="marksTable">
+                <!-- Rows injected by JS -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-2">
+            <button id="btnSendMarks" class="btn btn-primary">إرسال علامات الطلاب</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Add Note for Student -->
+        <section class="card-panel p-3 mb-3">
+          <h6 class="mb-2">إضافة ملاحظة لطالب</h6>
+          <form id="studentNoteForm" class="row g-2 mb-2">
+            <div class="col-12">
+              <select id="studentSelect" class="form-select">
+                <!-- students injected -->
+              </select>
+            </div>
+            <div class="col-12">
+              <textarea id="studentNoteText" class="form-control" rows="3" placeholder="اكتب الملاحظة..."></textarea>
+            </div>
+            <div class="col-6">
+              <input type="date" id="studentNoteDate" class="form-control">
+            </div>
+            <div class="col-6 text-start">
+              <button type="submit" class="btn btn-primary w-100">حفظ الملاحظة</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Add Note for Teacher -->
+        <section class="card-panel p-3 mb-3">
+          <h6 class="mb-2">إضافة ملاحظة لمدرس</h6>
+          <form id="teacherNoteForm" class="row g-2 mb-2">
+            <div class="col-12">
+              <select id="teacherSelect" class="form-select">
+                <option value="t-101">المدرس أحمد علي</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <textarea id="teacherNoteText" class="form-control" rows="3" placeholder="اكتب الملاحظة..."></textarea>
+            </div>
+            <div class="col-6">
+              <input type="date" id="teacherNoteDate" class="form-control">
+            </div>
+            <div class="col-6 text-start">
+              <button type="submit" class="btn btn-primary w-100">حفظ الملاحظة</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // بيانات تجريبية
+  const mockSupervisor = {
+    id:'s-101', name:'الموجه سامي', grade:'التاسع',
+    classes: {
+      class1:[
+        {id:'stu-101',name:'أحمد محمد'},
+        {id:'stu-102',name:'سارة علي'}
+      ],
+      class2:[
+        {id:'stu-103',name:'ليلى حسن'},
+        {id:'stu-104',name:'يوسف خالد'}
+      ]
+    },
+    studentNotes: [],
+    teacherNotes: [],
+    marks: []
+  };
+
+  let currentClass = 'class1';
+  
+  function renderProfile(){
+    document.getElementById('supervisorName').textContent = mockSupervisor.name;
+    document.getElementById('supervisorDept').textContent = mockSupervisor.grade;
+    document.getElementById('supervisorIdBadge').textContent = 'ID: ' + mockSupervisor.id;
+    document.getElementById('infoUpdated').textContent = new Date().toLocaleDateString();
+    document.getElementById('avatar').textContent = mockSupervisor.name.charAt(0);
+  }
+
+  function renderStudents(){
+    const list = document.getElementById('studentsList');
+    const select = document.getElementById('studentSelect');
+    const students = mockSupervisor.classes[currentClass];
+    list.innerHTML = students.map(s=>`<button class="list-group-item list-group-item-action">${s.name}</button>`).join('');
+    select.innerHTML = students.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  }
+
+  function renderMarks(){
+    const tbody = document.getElementById('marksTable');
+    const students = mockSupervisor.classes[currentClass];
+    tbody.innerHTML = students.map(s=>{
+      const mark = mockSupervisor.marks.find(m=>m.id===s.id) || {study:0,oral:0,home:0,exam:0};
+      const total = mark.study + mark.oral + mark.home;
+      const totalGrade = total + mark.exam;
+      const status = total>=50 ? 'ناجح' : 'راسب';
+      const finalStatus = totalGrade>=50 ? 'ناجح' : 'راسب';
+      return `<tr>
+        <td>${s.name}</td>
+        <td><input type="number" min="0" max="100" value="${mark.study}" class="form-control study"></td>
+        <td><input type="number" min="0" max="100" value="${mark.oral}" class="form-control oral"></td>
+        <td><input type="number" min="0" max="100" value="${mark.home}" class="form-control home"></td>
+        <td>${total}</td>
+        <td>${status}</td>
+        <td><input type="number" min="0" max="100" value="${mark.exam}" class="form-control exam"></td>
+        <td>${totalGrade}</td>
+        <td>${finalStatus}</td>
+      </tr>`;
+    }).join('');
+    // attach input events
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach((row,i)=>{
+      ['study','oral','home','exam'].forEach(cls=>{
+        row.querySelector('.'+cls).addEventListener('input', ()=>{
+          const s = mockSupervisor.classes[currentClass][i];
+          const study = parseInt(row.querySelector('.study').value)||0;
+          const oral = parseInt(row.querySelector('.oral').value)||0;
+          const home = parseInt(row.querySelector('.home').value)||0;
+          const exam = parseInt(row.querySelector('.exam').value)||0;
+          const total = study+oral+home;
+          const totalGrade = total+exam;
+          const status = total>=50 ? 'ناجح':'راسب';
+          const finalStatus = totalGrade>=50?'ناجح':'راسب';
+          row.cells[4].textContent = total;
+          row.cells[5].textContent = status;
+          row.cells[7].textContent = totalGrade;
+          row.cells[8].textContent = finalStatus;
+          // save to marks
+          const idx = mockSupervisor.marks.findIndex(m=>m.id===s.id);
+          if(idx>=0) mockSupervisor.marks[idx]={id:s.id,study,oral,home,exam};
+          else mockSupervisor.marks.push({id:s.id,study,oral,home,exam});
+        });
+      });
+    });
+  }
+// إضافة حالة إرسال لكل طالب
+function renderMarks(){
+  const tbody = document.getElementById('marksTable');
+  const students = mockSupervisor.classes[currentClass];
+  tbody.innerHTML = students.map(s=>{
+    const mark = mockSupervisor.marks.find(m=>m.id===s.id) || {study:0,oral:0,home:0,exam:0,sent:false};
+    const total = mark.study + mark.oral + mark.home;
+    const totalGrade = total + mark.exam;
+    const status = total>=50 ? 'ناجح' : 'راسب';
+    const finalStatus = totalGrade>=50 ? 'ناجح' : 'راسب';
+    const sentStatus = mark.sent ? 'تم الإرسال' : 'لم يتم الإرسال';
+    return `<tr>
+      <td>${s.name}</td>
+      <td><input type="number" min="0" max="100" value="${mark.study}" class="form-control study"></td>
+      <td><input type="number" min="0" max="100" value="${mark.oral}" class="form-control oral"></td>
+      <td><input type="number" min="0" max="100" value="${mark.home}" class="form-control home"></td>
+      <td>${total}</td>
+      <td>${status}</td>
+      <td><input type="number" min="0" max="100" value="${mark.exam}" class="form-control exam"></td>
+      <td>${totalGrade}</td>
+      <td>${finalStatus}</td>
+      <td class="sent-status">${sentStatus}</td>
+    </tr>`;
+  }).join('');
+  // أحداث لتحديث العلامات
+  const rows = tbody.querySelectorAll('tr');
+  rows.forEach((row,i)=>{
+    ['study','oral','home','exam'].forEach(cls=>{
+      row.querySelector('.'+cls).addEventListener('input', ()=>{
+        const s = mockSupervisor.classes[currentClass][i];
+        const study = parseInt(row.querySelector('.study').value)||0;
+        const oral = parseInt(row.querySelector('.oral').value)||0;
+        const home = parseInt(row.querySelector('.home').value)||0;
+        const exam = parseInt(row.querySelector('.exam').value)||0;
+        const total = study+oral+home;
+        const totalGrade = total+exam;
+        const status = total>=50 ? 'ناجح':'راسب';
+        const finalStatus = totalGrade>=50?'ناجح':'راسب';
+        row.cells[4].textContent = total;
+        row.cells[5].textContent = status;
+        row.cells[7].textContent = totalGrade;
+        row.cells[8].textContent = finalStatus;
+        // حفظ العلامات مع عدم إرسالها تلقائيًا
+        const idx = mockSupervisor.marks.findIndex(m=>m.id===s.id);
+        if(idx>=0) mockSupervisor.marks[idx]={id:s.id,study,oral,home,exam,sent:mockSupervisor.marks[idx].sent};
+        else mockSupervisor.marks.push({id:s.id,study,oral,home,exam,sent:false});
+        row.cells[9].textContent = mockSupervisor.marks.find(m=>m.id===s.id).sent?'تم الإرسال':'لم يتم الإرسال';
+      });
+    });
+  });
+}
+
+// زر إرسال العلامات
+document.getElementById('btnSendMarks').addEventListener('click', ()=>{
+  const students = mockSupervisor.classes[currentClass];
+  students.forEach(s=>{
+    const idx = mockSupervisor.marks.findIndex(m=>m.id===s.id);
+    if(idx>=0) mockSupervisor.marks[idx].sent = true;
+    else mockSupervisor.marks.push({id:s.id,study:0,oral:0,home:0,exam:0,sent:true});
+  });
+  renderMarks();
+  alert('تم إرسال علامات الطلاب بنجاح');
+});
+
+  function renderStudentNotes(){
+    // optional: show notes somewhere
+  }
+
+  function renderTeacherNotes(){
+    // optional: show notes somewhere
+  }
+
+  document.getElementById('btnClass1').addEventListener('click', ()=>{
+    currentClass='class1'; renderStudents(); renderMarks();
+  });
+  document.getElementById('btnClass2').addEventListener('click', ()=>{
+    currentClass='class2'; renderStudents(); renderMarks();
+  });
+
+  document.getElementById('studentNoteForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const studentId = document.getElementById('studentSelect').value;
+    const text = document.getElementById('studentNoteText').value.trim();
+    const date = document.getElementById('studentNoteDate').value || new Date().toLocaleDateString();
+    if(!text){ alert('أدخل نص الملاحظة'); return; }
+    mockSupervisor.studentNotes.push({studentId,text,date});
+    document.getElementById('studentNoteText').value='';
+    document.getElementById('studentNoteDate').value='';
+    alert('تم حفظ الملاحظة للطالب');
+  });
+
+  document.getElementById('teacherNoteForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const teacherId = document.getElementById('teacherSelect').value;
+    const text = document.getElementById('teacherNoteText').value.trim();
+    const date = document.getElementById('teacherNoteDate').value || new Date().toLocaleDateString();
+    if(!text){ alert('أدخل نص الملاحظة'); return; }
+    mockSupervisor.teacherNotes.push({teacherId,text,date});
+    document.getElementById('teacherNoteText').value='';
+    document.getElementById('teacherNoteDate').value='';
+    alert('تم حفظ الملاحظة للمدرس');
+  });
+
+  (function init(){
+    renderProfile();
+    renderStudents();
+    renderMarks();
+  })(); 
+</script>
+</body>
+</html>
