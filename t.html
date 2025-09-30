@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ملف المدرس — نظام المدرسة</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="assest/css/style.css">
 </head>
 <body>
@@ -13,7 +15,7 @@
     <div class="container-fluid">
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-3">
-          <button class="btn btn-sm btn-light btn-ghost" onclick="location.href='index.html'">العودة</button>
+          <i class="fas fa-sign-out-alt text-white" style="cursor: pointer; font-size: 1.2rem;" onclick="location.href='index.html'"></i>
           <h5 class="mb-0 text-white">ملف المدرس</h5>
         </div>
         <!-- <div class="text-end text-white small-muted">نظام إدارة المدرسة</div> -->
@@ -26,14 +28,27 @@
       <!-- Left column: profile -->
       <aside class="col-12 col-md-4">
         <div class="card-panel p-4 text-center">
-          <div id="avatar" class="user-avatar mb-2">م</div>
+          <img id="avatar" src="assest/image/copilot_image_1743686675023.jpeg" alt="صورة الطالب" class="user-avatar">
           <h5 id="teacherName" class="mb-0">اسم المدرس</h5>
           <div id="teacherDept" class="small-muted">المادة / القسم</div>
           <div class="mt-2">
             <span id="teacherIdBadge" class="badge bg-primary">ID: -</span>
           </div>
-        </div>
 
+          
+        
+        <hr class="my-3">
+
+          <h6 class="mb-2">رمز QR سريع</h6>
+          <div class="text-center mb-3">
+            <div id="qrBox" class="qr-box"></div>
+          </div>
+          <div class="d-grid gap-2">
+            <button id="showQRBtn" class="btn btn-primary">عرض رمز QR</button>
+            <a id="downloadQR" class="btn btn-outline-secondary" download>تحميل الرمز</a>
+          </div>
+      </div>
+      
         <div class="card-panel p-3 mt-3">
           <h6>معلومات سريعة</h6>
           <p class="small-muted mb-1"><strong>المادة:</strong> <span id="infoDept">-</span></p>
@@ -112,8 +127,8 @@
     
     // --------- بيانات تجريبية ----------
     const mockTeacher = { 
-      id:'t-101', name:'أحمد علي', dept:'رياضيات', students:[
-        { id: 'stu-101', name: 'أحمد محمد' },
+      id:'t-101', name:' جميلة المش', dept:'لغة عربية', students:[
+        { id: 'stu-101', name: 'سيدرا محمد' },
         { id: 'stu-102', name: 'سارة علي' }
       ],
       exams: [],
@@ -139,7 +154,20 @@
       const list = document.getElementById('studentsList');
       list.innerHTML = STUDENTS.map(s=>`<button class="list-group-item list-group-item-action">${s.name}</button>`).join('');
     }
+function qrUrl(data, size=260){
+    return `https://chart.googleapis.com/chart?chs=${size}x${size}&cht=qr&chl=${encodeURIComponent(data)}&choe=UTF-8`;
+  }
 
+  function renderQR(id){
+    const box = document.querySelector('#qrBox');
+    box.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = qrUrl(location.origin + location.pathname + '?id=' + id, 170);
+    box.appendChild(img);
+    const dl = document.querySelector('#downloadQR');
+    dl.href = qrUrl(location.origin + location.pathname + '?id=' + id, 400);
+    dl.download = `${id}-qr.png`;
+  }
     function renderExams(){
       const wrap = document.getElementById('examsList');
       if(!mockTeacher.exams.length){
